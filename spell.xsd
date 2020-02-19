@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    
+
+    <xsd:element name="ability">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="effectsForCaster" type="abilityEffect" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="effectsForTarget" type="abilityEffect" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>  
+            <xsd:attribute name="id" type="xsd:int"/>
+            <xsd:attribute name="name" type="xsd:string"/>
+            <xsd:attribute name="manaCost" type="xsd:int"/>
+            <xsd:attribute name="cooldown" type="xsd:int"/>
+            <xsd:attribute name="cooldownReamingTime" type="xsd:int"/>
+            <xsd:attribute name="ableToMiss" type="xsd:boolean"/>
+        </xsd:complexType>
+    </xsd:element>   
+    
+    <xsd:complexType name="abilityEffect" abstract="true">
+        <xsd:sequence>
+            <xsd:element name="spellEffect" >
+                <xsd:complexType>
+                    <xsd:attribute name="id" type="xsd:int"/>
+                    <xsd:attribute name="ableToMiss" type="xsd:boolean"/>
+                    <xsd:attribute name="magicSchool" type="magicSchools"/>  
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>  
+    
+    <xsd:complexType name="overTime" abstract="true">
+        <xsd:complexContent>
+            <xsd:extension base="abilityEffect">
+                <xsd:attribute name="name" type="xsd:string"/>
+                <xsd:attribute name="duration" type="xsd:int"/>
+                <xsd:attribute name="reamingTime" type="xsd:int"/>
+                <xsd:attribute name="stackable" type="xsd:int"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="damage">
+        <xsd:complexContent>
+            <xsd:extension base="abilityEffect">
+                <xsd:attribute name="minEffect" type="xsd:double"/>
+                <xsd:attribute name="maxEffect" type="xsd:double"/>
+                <xsd:attribute name="multiplier" type="xsd:double"/>
+                <xsd:attribute name="modAtt" type="attributeTypes"/>
+                <xsd:attribute name="ableToCrit" type="xsd:boolean"/>
+                <xsd:attribute name="percentage" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="heal">
+        <xsd:complexContent>
+            <xsd:extension base="abilityEffect">
+                <xsd:attribute name="minEffect" type="xsd:double"/>
+                <xsd:attribute name="percentage" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+     <xsd:complexType name="shield">
+        <xsd:complexContent>
+            <xsd:extension base="overTime">
+                <xsd:attribute name="absorb" type="xsd:double"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="conditionEffect">
+        <xsd:complexContent>
+            <xsd:extension base="overTime">
+                <xsd:sequence>
+                    <xsd:element name="effectEventCheck" type="abilityEffectEvent"/>
+                    <xsd:element name="effectEventChange" type="abilityEffectEvent"/>
+                </xsd:sequence>
+                <xsd:attribute name="removeAfterTrigger" type="xsd:double"/>
+                <xsd:attribute name="effectIdToUse" type="xsd:int"/>
+                <xsd:attribute name="spellReflect" type="xsd:double"/>
+                <xsd:attribute name="event" type="abilityEvents"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="buff">
+        <xsd:complexContent>
+            <xsd:extension base="overTime">
+                <xsd:attribute name="attTarget" type="attributeTypes"/>
+                <xsd:attribute name="bonus" type="xsd:double"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="abilityEffectEvent">
+        <xsd:attribute name="casterId" type="xsd:int"/>
+        <xsd:attribute name="abilityEffectId" type="xsd:int"/>
+        <xsd:attribute name="targetId" type="xsd:int"/>
+        <xsd:attribute name="magicSchool" type="magicSchools"/>
+        <xsd:attribute name="hit" type="xsd:double"/>
+        <xsd:attribute name="modificator" type="xsd:double"/>
+        <xsd:attribute name="value" type="xsd:double"/>
+    </xsd:complexType>
+
+    <xsd:simpleType name="magicSchools">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Magical"/>
+            <xsd:enumeration value="Physical"/>
+            <xsd:enumeration value="True"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="attributeTypes">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="BaseHp"/>
+            <xsd:enumeration value="BonusHp"/>
+            <xsd:enumeration value="ActualHp"/>
+            <xsd:enumeration value="BaseMana"/>
+            <xsd:enumeration value="BonusMana"/>
+            <xsd:enumeration value="MaxMana"/>
+            <xsd:enumeration value="ActualMana"/>
+            <xsd:enumeration value="BaseStrength"/>
+            <xsd:enumeration value="BonusStrength"/>
+            <xsd:enumeration value="Strength"/>
+            <xsd:enumeration value="BaseAgility"/>
+            <xsd:enumeration value="BonusAgility"/>
+            <xsd:enumeration value="Agility"/>
+            <xsd:enumeration value="BaseIntellect"/>
+            <xsd:enumeration value="BonusIntellect"/>
+            <xsd:enumeration value="Intellect"/>
+            <xsd:enumeration value="BonusAttackPower"/>
+            <xsd:enumeration value="AttackPower"/>
+            <xsd:enumeration value="BonusMaxDamage"/>
+            <xsd:enumeration value="MaxDamage"/>
+            <xsd:enumeration value="BonusMinDamage"/>
+            <xsd:enumeration value="MinDamage"/>
+            <xsd:enumeration value="Armor"/>
+            <xsd:enumeration value="BonusDodgeChance"/>
+            <xsd:enumeration value="DodgeChance"/>
+            <xsd:enumeration value="BonusCritChance"/>
+            <xsd:enumeration value="CritChance"/>
+            <xsd:enumeration value="MagicResist"/>
+            <xsd:enumeration value="BonusSpellPower"/>
+            <xsd:enumeration value="SpellPower"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:simpleType name="abilityEvents">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="TurnStart"/>
+            <xsd:enumeration value="HealBeforeTake"/>
+            <xsd:enumeration value="HealAfterTake"/>
+            <xsd:enumeration value="DamageBeforeTake"/>
+            <xsd:enumeration value="DamageAfterTake"/>
+            <xsd:enumeration value="OverTimeBeforeTake"/>
+            <xsd:enumeration value="OverTimeBeforeUse"/>
+            <xsd:enumeration value="AbilityBeforeUse"/>
+            <xsd:enumeration value="AbilityAfterUse"/>
+            <xsd:enumeration value="TurnEnd"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+   
+    
+    
+</xsd:schema>
